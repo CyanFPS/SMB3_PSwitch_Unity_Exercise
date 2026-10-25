@@ -16,9 +16,8 @@ public enum EItemBoxContents : byte
     Mushroom,
     Coin1,
     Coin5,
-    Coin10
-
-        // TODO: Add additional ItemBox contents here
+    Coin10,
+    PSwitch
 }
 
 public class ItemBox : MonoBehaviour
@@ -148,13 +147,15 @@ public class ItemBox : MonoBehaviour
 
             Game.Instance.GetMarioState.Coins++;
         }
-        else
+        else if (contents == EItemBoxContents.Mushroom)
         {
-            if (contents == EItemBoxContents.Mushroom)
-            {
-                Game.Instance.SpawnMushroomPickup(location);
-            }
+            Game.Instance.SpawnMushroomPickup(location);
         }
+        else if (contents == EItemBoxContents.PSwitch)
+        {
+            Game.Instance.SpawnPSwitch(location);
+        }
+        
     }
 
     private void SetState(EItemBoxState itemBoxState)

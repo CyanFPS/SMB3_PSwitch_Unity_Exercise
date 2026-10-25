@@ -1,2 +1,20 @@
 fileFormatVersion: 2
 guid: d0ae6a7bbdeb4594cb14716cfb739ab3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - settings: {instanceID: 0}
+  - marioGameObject: {instanceID: 0}
+  - deadMarioPrefab: {instanceID: 0}
+  - mushroomPickupPrefab: {instanceID: 0}
+  - itemBoxCoinPrefab: {instanceID: 0}
+  - breakableBlockBitPrefab: {instanceID: 0}
+  - PSwitchPrefab: {instanceID: 0}
+  - coinPickupPrefab: {instanceID: 0}
+  - breakableBlockPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

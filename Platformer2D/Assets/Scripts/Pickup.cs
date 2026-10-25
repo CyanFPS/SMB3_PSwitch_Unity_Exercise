@@ -4,7 +4,8 @@ public enum EPickupType : byte
 {
     Unknown,
     Mushroom,
-    Coin
+    Coin,
+    PSwitch
 }
 
 public enum EPickupState : byte

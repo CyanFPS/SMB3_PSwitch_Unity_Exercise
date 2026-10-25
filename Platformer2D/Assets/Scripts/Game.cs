@@ -13,6 +13,15 @@ public class Game : MonoBehaviour
     public GameObject mushroomPickupPrefab;
     public GameObject itemBoxCoinPrefab;
     public GameObject breakableBlockBitPrefab;
+    public GameObject PSwitchPrefab;
+    public GameObject coinPickupPrefab;
+    public GameObject breakableBlockPrefab;
+    
+    private float coinSwitchDuration = 10.0f;
+    
+    // Variables to fine tune the behavior for the timers.
+    private bool coinSwitchActive = false;
+    private float coinSwitchTimer = 0.0f;
 
     private GameObject deadMario = null;
     private Vector2 marioSpawnLocation = Vector2.zero;
@@ -88,6 +97,17 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (coinSwitchActive) // If statement to control the 10 second timer
+        {
+            coinSwitchTimer -= Time.deltaTime;
+
+            // Once the Timer hits 0, the blocks go back to normal
+            if (coinSwitchTimer <= 0.0)
+            {
+                EndToggleCoinsAndBlocks();
+            }
+        }
+        
         if (deadMario != null)
         {
             if (deadMario.transform.position.y < settings.DestroyActorAtY)
@@ -219,6 +239,82 @@ public class Game : MonoBehaviour
             BreakableBlockBit breakableBlockBit = breakableBlockBitObject.GetComponent<BreakableBlockBit>();
             breakableBlockBit.Spawn(type, impulse);
         }
+    }
+  public void SpawnPSwitch(Vector2 location)
+    {
+        if (PSwitchPrefab != null)
+        {
+            GameObject PSwitchObject = Instantiate(PSwitchPrefab, new Vector3(location.x, location.y, -1.0f), Quaternion.identity);
+            PSwitch pSwitch = PSwitchObject.GetComponent<PSwitch>();
+            pSwitch.Spawn();
+        }
+    }
+
+    public void OnPSwitchPressed()
+    {
+        // Assigning the 10 second timer to Duration variable
+        coinSwitchTimer = coinSwitchDuration;
+        coinSwitchActive = true;
+        
+        BeginToggleCoinsAndBlocks();
+    }
+
+    public void BeginToggleCoinsAndBlocks()
+    {
+        // Grabbing Object Arrays for both Coins and Breakable Blocks
+        CoinPickup[] coinPickupObjects = FindObjectsByType<CoinPickup>(FindObjectsSortMode.None);
+        BreakableBlock[] breakableBlockObjects = FindObjectsByType<BreakableBlock>(FindObjectsSortMode.None);
+
+        foreach(CoinPickup coin in coinPickupObjects)
+        {
+            Vector2 location = coin.transform.position;
+
+            Destroy(coin.gameObject);
+
+            Instantiate(breakableBlockPrefab, location ,Quaternion.identity);
+        }
+
+        foreach (BreakableBlock block in breakableBlockObjects)
+        {
+            Vector2 location = block.transform.position;
+
+            Destroy(block.gameObject);
+
+            GameObject staticCoin = Instantiate(coinPickupPrefab, location, Quaternion.identity);
+
+            CoinPickup coin = staticCoin.GetComponent<CoinPickup>();
+            if (coin != null)
+            {
+                coin.UseStaticCoin();
+            }
+        }
+    }
+
+    public void EndToggleCoinsAndBlocks()
+    {
+        // Grabbing Object Arrays for both Coins and Breakable Blocks
+        CoinPickup[] coinPickupObjects = FindObjectsByType<CoinPickup>(FindObjectsSortMode.None);
+        BreakableBlock[] breakableBlockObjects = FindObjectsByType<BreakableBlock>(FindObjectsSortMode.None);
+
+        foreach (CoinPickup coin in coinPickupObjects)
+        {
+            Vector2 location = coin.transform.position;
+
+            Destroy(coin.gameObject);
+
+            Instantiate(breakableBlockPrefab, location, Quaternion.identity);
+        }
+
+        foreach (BreakableBlock block in breakableBlockObjects)
+        {
+            Vector2 location = block.transform.position;
+
+            Destroy(block.gameObject);
+
+            Instantiate(coinPickupPrefab, location, Quaternion.identity);
+        }
+
+        coinSwitchActive = false;
     }
 
     private void SpawnDeadMario(Vector2 location)
